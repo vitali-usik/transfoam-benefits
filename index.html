@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TransFoam Accordion</title>
+  <style>
+    /* Local development fonts. Tilda supplies these families in production. */
+    @font-face {
+      font-family: "Anta";
+      src: url("./Anta,Inter,Outfit/Anta/Anta-Regular.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("./Anta,Inter,Outfit/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype-variations");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Inter";
+      src: url("./Anta,Inter,Outfit/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype-variations");
+      font-style: italic;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Outfit";
+      src: url("./Anta,Inter,Outfit/Outfit/Outfit-VariableFont_wght.ttf") format("truetype-variations");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    /* Design tokens */
+    .tf-accordion {
+      --tf-color-orange: #DA5B17;
+      --tf-color-blue: #315d93;
+      --tf-color-peach: #f3c3a8;
+      --tf-color-light-peach: #f4ddd2;
+      --tf-color-gray: #e0e4eb;
+      --tf-color-white: #fff;
+      --tf-color-black: #000;
+      --tf-radius-card: 18px;
+      --tf-radius-panel: 14px;
+      --tf-card-gap: 60px;
+      --tf-number-column-width: 26%;
+      --tf-card-padding: 26px;
+      display: grid;
+      gap: var(--tf-card-gap);
+      width: min(100%, 1720px);
+      margin: 0 auto;
+      color: var(--tf-color-black);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .tf-accordion,
+    .tf-accordion * {
+      box-sizing: border-box;
+    }
+
+    .tf-accordion button {
+      font: inherit;
+    }
+
+    /* Card markup */
+    .tf-accordion__item {
+      display: grid;
+      grid-template-columns: 290px 900px;
+      gap: 10px;
+      align-items: stretch;
+      width: 1240px;
+      min-height: 240px;
+      padding: 20px;
+      overflow: visible;
+      border-radius: var(--tf-radius-card);
+      background: var(--tf-color-peach);
+      justify-self: center;
+    }
+
+    .tf-accordion__number {
+      text-align: right;
+      color: var(--tf-color-white);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      font-size: 287px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 216px;
+    }
+
+    .tf-accordion__panel {
+      min-width: 0;
+      height: auto;
+      padding: 0;
+    }
+
+    .tf-accordion__collapsed,
+    .tf-accordion__expanded {
+      width: 900px;
+      border: 2px solid var(--tf-color-orange);
+      border-radius: var(--tf-radius-panel);
+      background: var(--tf-color-white);
+    }
+
+    .tf-accordion__collapsed {
+      position: relative;
+      display: flex;
+      min-height: 160px;
+      padding: 20px;
+      background: var(--tf-color-white);
+      box-shadow: 12px 38px 0 var(--tf-color-gray);
+    }
+
+    .tf-accordion__header {
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr) 100px;
+      padding: 10px;
+      gap: 16px;
+      align-items: center;
+      width: 100%;
+      min-height: 116px;
+      border-radius: calc(var(--tf-radius-panel) - 4px);
+      background: var(--tf-color-light-peach);
+    }
+
+    .tf-accordion__icon {
+      display: block;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    .tf-accordion__title {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      font-size: 40px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 100%;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .tf-accordion__open,
+    .accordion-close {
+      display: grid;
+      width: 100px;
+      height: 100px;
+      padding: 0;
+      place-items: center;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--tf-color-orange);
+      cursor: pointer;
+    }
+
+    .tf-accordion__open img,
+    .accordion-close img {
+      display: block;
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .tf-accordion__open:hover,
+    .accordion-close:hover {
+      background: rgba(223, 86, 12, .08);
+    }
+
+    .tf-accordion__open:focus-visible,
+    .accordion-close:focus-visible {
+      outline: 3px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    .tf-accordion__expanded {
+      height: auto;
+      padding: 20px;
+    }
+
+    .tf-accordion__body {
+      display: grid;
+      gap: 20px;
+      padding-top: 20px;
+    }
+
+    .tf-accordion__intro,
+    .tf-accordion__footer-text {
+      margin: 0;
+      padding: 10px;
+      border-radius: var(--tf-radius-panel);
+      background: var(--tf-color-light-peach);
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .tf-accordion__benefits {
+      display: grid;
+      gap: 14px;
+    }
+
+    .tf-accordion__benefits-title {
+      margin: 0;
+      padding: 10px;
+      border-radius: var(--tf-radius-panel);
+      background: var(--tf-color-orange);
+      color: var(--tf-color-white);
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .tf-accordion__benefits-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tf-accordion__benefits-list li {
+      position: relative;
+      padding: 10px 10px 10px 32px;
+      border-radius: var(--tf-radius-panel);
+      background: var(--tf-color-gray);
+      color: var(--tf-color-blue);
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .tf-accordion__benefits-list li::before {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--tf-color-orange);
+      content: "";
+      transform: translateY(-50%);
+    }
+
+    /* Accordion state logic */
+    /*noinspection CssUnusedSymbol*/
+    .tf-accordion__item:not(.is-open) .tf-accordion__expanded,
+    .tf-accordion__expanded[hidden] {
+      display: none;
+    }
+
+    .tf-accordion__item.is-open .tf-accordion__collapsed {
+      display: none;
+    }
+
+    .tf-accordion__item.is-open .tf-accordion__expanded {
+      display: block;
+    }
+
+    .tf-accordion__item.is-transitioning .tf-accordion__collapsed,
+    .tf-accordion__item.is-transitioning .tf-accordion__expanded:not([hidden]) {
+      animation: tfAccordionContentIn 360ms ease-out;
+    }
+
+    @keyframes tfAccordionContentIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tf-accordion__item.is-transitioning .tf-accordion__collapsed,
+      .tf-accordion__item.is-transitioning .tf-accordion__expanded:not([hidden]) {
+        animation: none;
+      }
+    }
+
+    /* Version 1 is desktop-first. Preserve usability on narrower embeds. */
+    @media (max-width: 1050px) {
+      .tf-accordion__header {
+        grid-template-columns: 80px minmax(0, 1fr) 74px;
+      }
+
+      .tf-accordion__collapsed {
+        min-height: 180px;
+      }
+
+    }
+  </style>
+</head>
+<body style="margin:0;padding:38px;background:#f7f7f8">
+  <section class="tf-accordion" data-accordion aria-label="TransFoam benefits">
+    <!-- Card 1 -->
+    <article class="tf-accordion__item" data-accordion-item>
+      <div class="tf-accordion__number" aria-hidden="true">1</div>
+      <div class="tf-accordion__panel">
+        <div class="tf-accordion__collapsed">
+          <div class="tf-accordion__collapsed-inner tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-temp.png" alt="">
+            <h2 class="tf-accordion__collapsed-title tf-accordion__title">Outstanding Acoustic and Vibration Insulation</h2>
+            <button class="tf-accordion__open" type="button" aria-expanded="false" aria-controls="tf-accordion-panel-1" aria-label="Open: Najlepsza izolacja cieplna pojazdów">
+              <img src="./assets/icons/show-more.png" alt="">
+            </button>
+          </div>
+        </div>
+        <div class="tf-accordion__expanded" id="tf-accordion-panel-1" hidden>
+          <header class="tf-accordion__expanded-header tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-temp.png" alt="">
+            <h2 class="tf-accordion__expanded-title tf-accordion__title">Outstanding Acoustic and Vibration Insulation</h2>
+            <button class="accordion-close" type="button" aria-label="Close: Superior thermal insulation performance">
+              <img src="./assets/icons/show-less.png" alt="">
+            </button>
+          </header>
+          <div class="tf-accordion__body">
+            <p class="tf-accordion__intro">TransFoam® effectively absorbs airborne noise and dampens vibrations generated by engines, wheels, tracks, and road surfaces.</p>
+            <section class="tf-accordion__benefits" aria-labelledby="tf-benefits-1">
+              <h3 class="tf-accordion__benefits-title" id="tf-benefits-1">Benefits include:</h3>
+              <ul class="tf-accordion__benefits-list">
+                <li>Improved passenger comfort</li>
+                <li>Reduced cabin noise levels</li>
+                <li>Excellent sound absorption properties</li>
+                <li>Enhanced vibration damping</li>
+                <li>Ideal for buses, trains, trams, and metro vehicles</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 2 -->
+    <article class="tf-accordion__item" data-accordion-item>
+      <div class="tf-accordion__number" aria-hidden="true">2</div>
+      <div class="tf-accordion__panel">
+        <div class="tf-accordion__collapsed">
+          <div class="tf-accordion__collapsed-inner tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-vibration.png" alt="">
+            <h2 class="tf-accordion__collapsed-title tf-accordion__title">Lightweight Design for Greater Energy Efficiency</h2>
+            <button class="tf-accordion__open" type="button" aria-expanded="false" aria-controls="tf-accordion-panel-2" aria-label="Open: Doskonała izolacja akustyczna i wibroizolacja">
+              <img src="./assets/icons/show-more.png" alt="">
+            </button>
+          </div>
+        </div>
+        <div class="tf-accordion__expanded" id="tf-accordion-panel-2" hidden>
+          <header class="tf-accordion__expanded-header tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-vibration.png" alt="">
+            <h2 class="tf-accordion__expanded-title tf-accordion__title">Lightweight Design for Greater Energy Efficiency</h2>
+            <button class="accordion-close" type="button" aria-label="Close: Excellent acoustic and vibration insulation">
+              <img src="./assets/icons/show-less.png" alt="">
+            </button>
+          </header>
+          <div class="tf-accordion__body">
+            <p class="tf-accordion__intro">With foam densities starting from just <b>8–10 kg/m³</b>, TransFoam® is among the lightest insulation systems available for transportation applications.</p>
+            <section class="tf-accordion__benefits" aria-labelledby="tf-benefits-2">
+              <h3 class="tf-accordion__benefits-title" id="tf-benefits-2">Benefits include:</h3>
+              <ul class="tf-accordion__benefits-list">
+                <li>Lower vehicle weight</li>
+                <li>Reduced fuel consumption</li>
+                <li>Improved electric vehicle range</li>
+                <li>Increased operational efficiency</li>
+                <li>Optimized vehicle performance</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 3 -->
+    <article class="tf-accordion__item" data-accordion-item>
+      <div class="tf-accordion__number" aria-hidden="true">3</div>
+      <div class="tf-accordion__panel">
+        <div class="tf-accordion__collapsed">
+          <div class="tf-accordion__collapsed-inner tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-weight.png" alt="">
+            <h2 class="tf-accordion__collapsed-title tf-accordion__title">Certified Fire Safety Performance</h2>
+            <button class="tf-accordion__open" type="button" aria-expanded="false" aria-controls="tf-accordion-panel-3" aria-label="Open: Certified Fire Safety Performance">
+              <img src="./assets/icons/show-more.png" alt="">
+            </button>
+          </div>
+        </div>
+        <div class="tf-accordion__expanded" id="tf-accordion-panel-3" hidden>
+          <header class="tf-accordion__expanded-header tf-accordion__header">
+            <img class="tf-accordion__icon" src="./assets/icons/icon-weight.png" alt="">
+            <h2 class="tf-accordion__expanded-title tf-accordion__title">Certified Fire Safety Performance</h2>
+            <button class="accordion-close" type="button" aria-label="Close: Certified Fire Safety Performance">
+              <img src="./assets/icons/show-less.png" alt="">
+            </button>
+          </header>
+          <div class="tf-accordion__body">
+            <p class="tf-accordion__intro">TransFoam® insulation systems comply with major international transportation fire safety standards, including:</p>
+            <section class="tf-accordion__benefits" aria-labelledby="tf-benefits-3">
+              <h3 class="tf-accordion__benefits-title" id="tf-benefits-3">Benefits include:</h3>
+              <ul class="tf-accordion__benefits-list">
+                <li>ECE R118 Appendix 6, 7, 8 and 9</li>
+                <li>FMVSS 302</li>
+                <li>EN 45545-2 R1 HL3</li>
+              </ul>
+            </section>
+            <p class="tf-accordion__footer-text">These certifications help manufacturers meet stringent safety requirements for public transportation vehicles.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <script>
+    (function () {
+      var itemAnimations = new WeakMap();
+
+      function changeItemState(item, updateState) {
+        var panel = item.querySelector(".tf-accordion__panel");
+        var runningAnimation = itemAnimations.get(item);
+        var startHeight = panel ? panel.getBoundingClientRect().height : 0;
+
+        if (runningAnimation) {
+          itemAnimations.delete(item);
+          runningAnimation.cancel();
+        }
+
+        if (panel) {
+          panel.style.height = "";
+          panel.style.overflow = "";
+        }
+
+        updateState();
+
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!panel || reduceMotion || typeof panel.animate !== "function") return;
+
+        var endHeight = panel.getBoundingClientRect().height;
+        if (startHeight === endHeight) return;
+
+        item.classList.add("is-transitioning");
+        panel.style.height = startHeight + "px";
+        panel.style.overflow = "hidden";
+
+        var animation = panel.animate(
+          [
+            { height: startHeight + "px" },
+            { height: endHeight + "px" }
+          ],
+          {
+            duration: 420,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+          }
+        );
+
+        itemAnimations.set(item, animation);
+
+        animation.finished.then(function () {
+          if (itemAnimations.get(item) !== animation) return;
+
+          itemAnimations.delete(item);
+          item.classList.remove("is-transitioning");
+          panel.style.height = "";
+          panel.style.overflow = "";
+        }).catch(function () {
+          /* A new action may intentionally replace this animation. */
+        });
+      }
+
+      function openItem(item) {
+        if (item.classList.contains("is-open")) return;
+
+        var openButton = item.querySelector(".tf-accordion__open");
+        var expanded = item.querySelector(".tf-accordion__expanded");
+        if (!openButton || !expanded) return;
+
+        changeItemState(item, function () {
+          item.classList.add("is-open");
+          openButton.setAttribute("aria-expanded", "true");
+          expanded.hidden = false;
+        });
+      }
+
+      function closeItem(item) {
+        if (!item.classList.contains("is-open")) return;
+
+        var openButton = item.querySelector(".tf-accordion__open");
+        var expanded = item.querySelector(".tf-accordion__expanded");
+        if (!openButton || !expanded) return;
+
+        changeItemState(item, function () {
+          item.classList.remove("is-open");
+          openButton.setAttribute("aria-expanded", "false");
+          expanded.hidden = true;
+          openButton.focus({ preventScroll: true });
+        });
+      }
+
+      function initAccordion(root) {
+        if (root.dataset.accordionInitialized === "true") return;
+        root.dataset.accordionInitialized = "true";
+
+        root.addEventListener("click", function (event) {
+          var openButton = event.target.closest(".tf-accordion__open");
+          var closeButton = event.target.closest(".accordion-close");
+
+          if (openButton && root.contains(openButton)) {
+            var openItemElement = openButton.closest("[data-accordion-item]");
+            if (openItemElement) openItem(openItemElement);
+            return;
+          }
+
+          if (closeButton && root.contains(closeButton)) {
+            var closeItemElement = closeButton.closest("[data-accordion-item]");
+            if (closeItemElement) closeItem(closeItemElement);
+          }
+        });
+      }
+
+      /* Tilda initialization handling */
+      function init() {
+        document.querySelectorAll("[data-accordion]").forEach(initAccordion);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
+      } else {
+        init();
+      }
+
+      document.addEventListener("tilda:page:load", init);
+    })();
+  </script>
+</body>
+</html>
