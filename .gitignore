@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# JetBrains
+.idea/
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+.env.local
+
+# Coverage
+coverage/
+
+# Misc
+*.swp
+*.swo
